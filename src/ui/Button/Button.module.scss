@@ -1,0 +1,22 @@
+.button {
+    color: black;
+    text-transform: uppercase;
+    border: 1px solid #dfe5ec;
+    padding: 15px;
+    width: 100%;
+    display: block;
+    cursor: pointer;
+    background: white;
+    border-radius: 5px;
+    &:global(.active) {
+        color: #fff;
+        background: #2196f3;
+        border: 1px solid #2196f3;
+    }
+    &:focus {
+        outline: none;
+    }
+    &:active {
+        outline: none;
+    }
+}

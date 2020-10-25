@@ -15,6 +15,16 @@ module.exports = {
                 },
             },
         },
+        {
+            name: 'scss',
+            options: {
+                postcss: {
+                    dev: {
+                        sourceMap: false,
+                    },
+                },
+            },
+        },
         'eslint',
     ],
     modifyWebpackConfig: (config) => {

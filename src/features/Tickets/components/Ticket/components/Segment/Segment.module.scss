@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.label {
+    font-size: 12px;
+    line-height: 18px;
+    color: #a0b0b9;
+    text-transform: uppercase;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 33%;
+}
