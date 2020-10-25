@@ -12,7 +12,6 @@
     "dependencies": {
         "effector": "^21.5.0",
         "effector-react": "^21.0.6",
-        "express": "^4.17.1",
         "razzle-plugin-typescript": "^3.3.7",
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
