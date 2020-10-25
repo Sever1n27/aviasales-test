@@ -18,7 +18,7 @@ module.exports = {
         'eslint',
     ],
     modifyWebpackConfig: (config) => {
-        const customConfig = Object.assign({}, config.webpackConfig);
+        const customConfig = { ...config.webpackConfig };
         customConfig.resolve['alias'] = {
             '@ui': path.resolve('./src/ui/'),
             '@core': path.resolve('./src/core/'),
