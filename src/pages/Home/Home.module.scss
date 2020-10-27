@@ -1,7 +1,11 @@
 .container {
-    display: flex;
     max-width: 1000px;
     margin: 0 auto;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
 }
 
 .filters {

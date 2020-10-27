@@ -25,7 +25,7 @@ export function StopsFilter() {
     ];
 
     return (
-        <Card>
+        <Card title="Количество пересадок" noPadding>
             <Checkbox label="Все" onChange={restoreStopFilter} value="all" checked={currentFilter.length === 4} />
             {checkboxes.map((item) => (
                 <Checkbox

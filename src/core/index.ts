@@ -1,14 +1,17 @@
-import { createEffect, restore, combine, createStore, createEvent, sample, forward } from 'effector';
+import { createEffect, restore, combine, createStore, createEvent, split, forward, guard } from 'effector';
 import { Ticket } from '@types';
+
+let searchId = '';
 
 async function fetchSearchIdRequest() {
     const res = await fetch('https://front-test.beta.aviasales.ru/search');
     if (!res.ok) throw new Error(`${res.status}`);
-    return res.json();
+    return res.json().then((data) => {
+        searchId = data.searchId;
+    });
 }
 
-async function fetchTicketsRequest(id: { searchId: string }) {
-    const searchId = id?.searchId;
+async function fetchTicketsRequest() {
     const res = await fetch(`https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`);
     if (!res.ok) throw new Error(`${res.status}`);
     return res.json();
@@ -17,7 +20,6 @@ async function fetchTicketsRequest(id: { searchId: string }) {
 export const stops = [0, 1, 2, 3];
 
 export const fetchSearchId = createEffect(fetchSearchIdRequest);
-export const $id = restore(fetchSearchId.doneData, null);
 export const fetchTickets = createEffect(fetchTicketsRequest);
 export const $tickets = restore<{ stop: boolean; tickets: Ticket[] }>(fetchTickets.doneData, {
     stop: false,
@@ -26,7 +28,12 @@ export const $tickets = restore<{ stop: boolean; tickets: Ticket[] }>(fetchTicke
     stop: data.stop,
     tickets: [...state.tickets, ...data.tickets],
 }));
-
+export const $isLoading = combine(
+    fetchSearchId.pending,
+    fetchTickets.pending,
+    $tickets,
+    (idPending, ticketsPending, tickets) => idPending || ticketsPending || !tickets.stop,
+);
 export const changeStopFilter = createEvent<number>();
 export const restoreStopFilter = createEvent();
 export const $stopFilters = createStore(stops)
@@ -39,12 +46,6 @@ export const $stopFilters = createStore(stops)
         } else return [];
     });
 
-// temporary, refetch searchId on error
-forward({
-    from: fetchTickets.fail,
-    to: fetchSearchId,
-});
-
 const $filteredTickets = combine($tickets, $stopFilters, (ticketsData, stopFilters) => {
     if (ticketsData.stop && stopFilters.length > 0) {
         return ticketsData.tickets.filter((ticket) =>
@@ -52,6 +53,43 @@ const $filteredTickets = combine($tickets, $stopFilters, (ticketsData, stopFilte
         );
     }
 });
+const $shouldContinueFetch = $tickets.map((state) => !state.stop);
+
+export const $error = createStore<string>('');
+export const clearError = createEvent();
+
+const { badRequest, notfoundError, serversideError, networkError } = split(fetchTickets.failData, {
+    badRequest: (error: Error) => error.message === '400',
+    notfoundError: (error: Error) => error.message === '404',
+    serversideError: (error: Error) => error.message >= '500',
+    networkError: (error: Error) => error.message === undefined,
+});
+
+$error
+    .on(fetchTickets, () => '')
+    .on(clearError, () => '')
+    .on(badRequest, () => 'Неправильный запрос (HTTP 400)')
+    .on(notfoundError, () => 'Страница не найдена (HTTP 404)')
+    .on(serversideError, () => 'Ошибка на стороне сервера (HTTP 500)')
+    .on(networkError, () => 'Проблема с сетевым подключением');
+
+forward({
+    from: fetchSearchId.doneData,
+    to: fetchTickets,
+});
+
+guard({
+    source: fetchTickets.doneData,
+    filter: $shouldContinueFetch,
+    target: fetchTickets,
+});
+
+// temp
+forward({
+    from: clearError,
+    to: fetchTickets,
+});
+
 export const changeShownTickets = createEvent<string>();
 export const $mode = createStore<string>('cheapest').on(changeShownTickets, (state, payload) => payload);
 
@@ -72,22 +110,12 @@ export const $cheapestTickets = $filteredTickets.map((tickets) =>
     tickets ? tickets.sort((a, b) => a.price - b.price).slice(0, 5) : [],
 );
 
-combine({ id: $id, tickets: $tickets }, ({ id, tickets }) => {
-    if (!tickets.stop && id) {
-        fetchTickets(id);
-    }
-});
-
 $tickets.watch((state) => {
     console.log(state);
 });
 
-$cheapestTickets.watch((state) => {
-    console.log('cheapest:', state);
-});
-
-$fastestTickets.watch((state) => {
-    console.log('fastest:', state);
+$error.watch((state) => {
+    console.log('error', state);
 });
 
 $mode.watch((state) => {
