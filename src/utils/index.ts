@@ -25,6 +25,6 @@ export function declOfNum(number: number) {
         case number >= 5:
             return `${number} пересадок`;
         default:
-            return 'Нет пересадок';
+            return 'Без пересадок';
     }
 }

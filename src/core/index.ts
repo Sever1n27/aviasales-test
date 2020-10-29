@@ -17,8 +17,6 @@ async function fetchTicketsRequest() {
     return res.json();
 }
 
-export const stops = [0, 1, 2, 3];
-
 export const fetchSearchId = createEffect(fetchSearchIdRequest);
 export const fetchTickets = createEffect(fetchTicketsRequest);
 export const $tickets = restore<{ stop: boolean; tickets: Ticket[] }>(fetchTickets.doneData, {
@@ -29,15 +27,30 @@ export const $tickets = restore<{ stop: boolean; tickets: Ticket[] }>(fetchTicke
     tickets: [...state.tickets, ...data.tickets],
 }));
 
+export const $availableStopsFilters = $tickets.map((data) => {
+    if (data.stop) {
+        let stops: number[] = [];
+        data.tickets.map((ticket) =>
+            ticket.segments.map((segment) => {
+                if (!stops.includes(segment.stops.length)) {
+                    stops = [...stops, segment.stops.length];
+                }
+            }),
+        );
+        return stops.sort((a, b) => a - b);
+    }
+    return [];
+});
 export const changeStopFilter = createEvent<number>();
 export const restoreStopFilter = createEvent();
-export const $stopFilters = createStore(stops)
+export const $stopFilters = $availableStopsFilters
+    .map((filter) => filter)
     .on(changeStopFilter, (state, payload) =>
         state.includes(payload) ? state.filter((item) => item !== payload) : [...state, payload],
     )
     .on(restoreStopFilter, () => {
-        if ($stopFilters.getState().length < stops.length) {
-            return stops;
+        if ($stopFilters.getState().length < $availableStopsFilters.getState().length) {
+            return $availableStopsFilters.getState();
         } else return [];
     });
 
@@ -48,6 +61,7 @@ const $filteredTickets = combine($tickets, $stopFilters, (ticketsData, stopFilte
         );
     }
 });
+
 const $shouldContinueFetch = $tickets.map((state) => !state.stop);
 
 export const $error = createStore<string>('');
