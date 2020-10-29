@@ -1,7 +1,21 @@
+@font-face {
+    font-family: 'Open Sans';
+    src: url('/fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+:root {
+    --main: #2196f3;
+    --secondary: #a0b0b9;
+    --text: #4a4a4a;
+    --bg: #f3f7fa;
+    --hover: #f1fcff;
+}
+
 body,
 html,
 #root {
-    background: #f3f7fa;
+    background: var(--bg);
     margin: 0;
     padding: 0;
+    font-family: 'Open Sans', 'Arial', sans-serif;
 }

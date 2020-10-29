@@ -11,7 +11,9 @@ export function Tickets() {
     return (
         <div className={styles.container}>
             {shownTickets &&
-                shownTickets.map((ticket, index) => <Ticket key={`${index}+${ticket.carrier}`} {...ticket} />)}
+                shownTickets.map((ticket, index) => (
+                    <Ticket key={`${index}-${ticket.carrier}-${ticket.price}`} {...ticket} />
+                ))}
         </div>
     );
 }

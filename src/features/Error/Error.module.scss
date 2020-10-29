@@ -1,0 +1,16 @@
+.wrapper {
+    width: 100%;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.sadface {
+    display: block;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+}

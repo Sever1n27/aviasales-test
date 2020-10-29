@@ -28,12 +28,7 @@ export const $tickets = restore<{ stop: boolean; tickets: Ticket[] }>(fetchTicke
     stop: data.stop,
     tickets: [...state.tickets, ...data.tickets],
 }));
-export const $isLoading = combine(
-    fetchSearchId.pending,
-    fetchTickets.pending,
-    $tickets,
-    (idPending, ticketsPending, tickets) => idPending || ticketsPending || !tickets.stop,
-);
+
 export const changeStopFilter = createEvent<number>();
 export const restoreStopFilter = createEvent();
 export const $stopFilters = createStore(stops)
@@ -47,7 +42,7 @@ export const $stopFilters = createStore(stops)
     });
 
 const $filteredTickets = combine($tickets, $stopFilters, (ticketsData, stopFilters) => {
-    if (ticketsData.stop && stopFilters.length > 0) {
+    if (ticketsData.stop) {
         return ticketsData.tickets.filter((ticket) =>
             ticket.segments.every((segment) => stopFilters.includes(segment.stops.length)),
         );
@@ -73,6 +68,14 @@ $error
     .on(serversideError, () => 'Ошибка на стороне сервера (HTTP 500)')
     .on(networkError, () => 'Проблема с сетевым подключением');
 
+export const $isLoading = combine(
+    fetchSearchId.pending,
+    fetchTickets.pending,
+    $tickets,
+    $error,
+    (idPending, ticketsPending, tickets, error) => (idPending || ticketsPending || !tickets.stop) && !error,
+);
+
 forward({
     from: fetchSearchId.doneData,
     to: fetchTickets,
@@ -93,31 +96,17 @@ forward({
 export const changeShownTickets = createEvent<string>();
 export const $mode = createStore<string>('cheapest').on(changeShownTickets, (state, payload) => payload);
 
+function calculateSegmentsDuration(ticket: Ticket) {
+    return ticket.segments.map((segment: any) => segment.duration).reduce((a, b) => a + b, 0);
+}
 export const $fastestTickets = $filteredTickets.map((tickets) =>
     tickets
         ? tickets
-              .sort(
-                  (a, b) =>
-                      a.segments[0].duration +
-                      a.segments[1].duration -
-                      (b.segments[0].duration + b.segments[1].duration),
-              )
+              .sort((current, next) => calculateSegmentsDuration(current) - calculateSegmentsDuration(next))
               .slice(0, 5)
         : [],
 );
 
 export const $cheapestTickets = $filteredTickets.map((tickets) =>
-    tickets ? tickets.sort((a, b) => a.price - b.price).slice(0, 5) : [],
+    tickets ? tickets.sort((current, next) => current.price - next.price).slice(0, 5) : [],
 );
-
-$tickets.watch((state) => {
-    console.log(state);
-});
-
-$error.watch((state) => {
-    console.log('error', state);
-});
-
-$mode.watch((state) => {
-    console.log('mode:', state);
-});

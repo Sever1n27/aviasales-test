@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './Segment.module.scss';
-import { formatDuration, intervalToDuration, format, parseISO, addMinutes } from 'date-fns';
-import ru from 'date-fns/locale/ru';
+import { formatDate, calculateDestinationTime, humanDuration, declOfNum } from '@utils';
 
 type SegmentProps = {
     origin: string;
@@ -11,13 +10,8 @@ type SegmentProps = {
     duration: number;
 };
 
-function humanDuration(time: number) {
-    return formatDuration(intervalToDuration({ start: 0, end: time * 1000 }));
-}
-
 export function Segment(props: SegmentProps) {
     const { origin, destination, date, stops, duration } = props;
-
     return (
         <div className={styles.container}>
             <div className={styles.column}>
@@ -25,8 +19,7 @@ export function Segment(props: SegmentProps) {
                     {origin} - {destination}
                 </span>
                 <span>
-                    {format(parseISO(date), 'HH:mm', { locale: ru })} -{' '}
-                    {format(addMinutes(parseISO(date), duration), 'HH:mm', { locale: ru })}
+                    {formatDate(date)} - {calculateDestinationTime(date, duration)}
                 </span>
             </div>
             <div className={styles.column}>
@@ -34,8 +27,16 @@ export function Segment(props: SegmentProps) {
                 <span>{humanDuration(duration * 60)}</span>
             </div>
             <div className={styles.column}>
-                <span className={styles.label}>{stops.length} пересадок</span>
-                <span>{stops.map((stop) => stop)}</span>
+                <span className={styles.label}>{declOfNum(stops.length)}</span>
+                <span>
+                    {stops.length > 0
+                        ? stops.map((stop, index) => (
+                              <span className={styles.stop} key={`${index}-${stop}`}>
+                                  {stop}
+                              </span>
+                          ))
+                        : 'Прямой'}
+                </span>
             </div>
         </div>
     );

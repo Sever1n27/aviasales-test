@@ -4,3 +4,4 @@ export * from './Sorting';
 export * from './ErrorNotifications';
 export * from './Logo';
 export * from './Preloader';
+export * from './Error';

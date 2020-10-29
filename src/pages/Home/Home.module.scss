@@ -1,5 +1,5 @@
 .container {
-    max-width: 1000px;
+    max-width: 760px;
     margin: 0 auto;
 }
 
@@ -11,4 +11,8 @@
 .filters {
     margin-right: 20px;
     flex-grow: 0;
+}
+
+.tickets {
+    flex-grow: 1;
 }

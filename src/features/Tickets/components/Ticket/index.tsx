@@ -14,8 +14,8 @@ export function Ticket(props: Ticket) {
                     <img src={`//pics.avs.io/99/36/${carrier}.png`} />
                 </div>
                 <div>
-                    {segments.map((segment) => (
-                        <Segment key={segment.duration} {...segment} />
+                    {segments.map((segment, index) => (
+                        <Segment key={`${segment.duration}-${index}`} {...segment} />
                     ))}
                 </div>
             </div>
