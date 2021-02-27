@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import { useTransition, animated } from 'react-spring';
+import { easeExpInOut } from 'd3-ease';
+import { Animate } from 'react-move';
 import styles from './Card.module.scss';
 
 type CardProps = {
@@ -12,22 +13,50 @@ type CardProps = {
 export function Card(props: CardProps) {
     const { children, title, noPadding } = props;
     const className = clsx(styles.card, noPadding && 'no-padding');
-    const transitions = useTransition(true, null, {
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-    });
     return (
-        <>
-            {transitions.map(
-                ({ item, key, props }) =>
-                    item && (
-                        <animated.div className={className} key={key} style={props}>
+        <Animate
+            show={true}
+            start={{
+                opacity: 0,
+            }}
+            enter={{
+                opacity: [1],
+                timing: { duration: 600, ease: easeExpInOut },
+            }}
+            update={{
+                opacity: [1],
+                timing: { duration: 600, ease: easeExpInOut },
+            }}
+            leave={[
+                {
+                    timing: { duration: 600, ease: easeExpInOut },
+                },
+                {
+                    opacity: [0],
+                    timing: { delay: 600, duration: 500, ease: easeExpInOut },
+                },
+            ]}
+        >
+            {({ opacity }) => {
+                return (
+                    <div
+                        className={className}
+                        style={{
+                            opacity,
+                        }}
+                    >
+                        {title && <div className={styles.title}>{title}</div>}
+                        {children}
+                    </div>
+                );
+            }}
+        </Animate>
+    );
+}
+
+{
+    /* <animated.div className={className} key={key} style={props}>
                             {title && <div className={styles.title}>{title}</div>}
                             {children}
-                        </animated.div>
-                    ),
-            )}
-        </>
-    );
+                        </animated.div> */
 }
