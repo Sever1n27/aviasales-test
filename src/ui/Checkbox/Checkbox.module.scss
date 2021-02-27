@@ -12,9 +12,8 @@
     &:hover {
         background-color: var(--hover);
     }
-    &:focus {
+    &:focus-within {
         background: var(--hover);
-        outline: none;
     }
     input {
         position: absolute;

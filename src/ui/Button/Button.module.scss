@@ -18,10 +18,6 @@
         background: var(--main);
         border: 1px solid var(--main);
     }
-    &:focus {
-        outline: none;
-        background: var(--main);
-    }
     &:active {
         outline: none;
         background: var(--main);
