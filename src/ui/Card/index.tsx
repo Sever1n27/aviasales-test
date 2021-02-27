@@ -53,10 +53,3 @@ export function Card(props: CardProps) {
         </Animate>
     );
 }
-
-{
-    /* <animated.div className={className} key={key} style={props}>
-                            {title && <div className={styles.title}>{title}</div>}
-                            {children}
-                        </animated.div> */
-}
