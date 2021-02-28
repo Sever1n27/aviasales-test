@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 require('dayjs/locale/ru');
 
 const config = {
@@ -13,7 +12,6 @@ const config = {
     ],
 };
 
-dayjs.extend(localizedFormat);
 dayjs.extend(duration);
 dayjs.extend(relativeTime, config);
 dayjs.locale('ru');
