@@ -1,7 +1,16 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     plugins: [
+        {
+            name: 'bundle-analyzer',
+            options: {
+                target: 'web',
+                env: 'production',
+                bundleAnalyzerConfig: {},
+            },
+        },
         {
             name: 'typescript',
             options: {
@@ -37,7 +46,15 @@ module.exports = {
             '@types': path.resolve('./src/types/'),
             '@features': path.resolve('./src/features/'),
             '@utils': path.resolve('./src/utils/'),
+            react: 'preact/compat',
+            'react-dom/test-utils': 'preact/test-utils',
+            'react-dom': 'preact/compat',
         };
+        customConfig.plugins.push(
+            new webpack.ProvidePlugin({
+                h: ['preact', 'h'],
+            }),
+        );
         return customConfig;
     },
 };

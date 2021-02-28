@@ -15,19 +15,17 @@
         "date-fns": "^2.16.1",
         "effector": "^21.5.0",
         "effector-react": "^21.0.6",
-        "react": "^17.0.1",
-        "react-dom": "^17.0.1",
+        "preact": "^10.5.12",
         "react-move": "^6.4.0",
         "react-router-dom": "^5.2.0"
     },
     "devDependencies": {
         "@types/d3-ease": "^2.0.0",
         "@types/node": "^14.14.2",
-        "@types/react": "^16.9.53",
-        "@types/react-dom": "^16.9.8",
         "@types/react-router-dom": "^5.1.6",
         "@typescript-eslint/eslint-plugin": "^4.5.0",
         "@typescript-eslint/parser": "^4.5.0",
+        "babel-plugin-transform-react-jsx": "^6.24.1",
         "eslint": "^7.12.0",
         "eslint-config-prettier": "^6.14.0",
         "eslint-plugin-import": "^2.22.1",
@@ -39,9 +37,10 @@
         "path": "^0.12.7",
         "prettier": "^2.1.2",
         "razzle": "^3.3.7",
+        "razzle-plugin-bundle-analyzer": "^4.0.0-canary.15",
         "razzle-plugin-eslint": "^3.3.7",
-        "razzle-plugin-typescript": "^3.3.7",
         "razzle-plugin-scss": "^3.3.7",
+        "razzle-plugin-typescript": "^3.3.7",
         "typescript": "^4.0.3"
     },
     "husky": {

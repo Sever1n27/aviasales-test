@@ -1,9 +1,9 @@
 import { App } from './App';
 import { BrowserRouter } from 'react-router-dom';
+import { render } from 'preact';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-ReactDOM.render(
+render(
     <BrowserRouter>
         <App />
     </BrowserRouter>,
