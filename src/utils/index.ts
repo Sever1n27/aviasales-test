@@ -1,10 +1,21 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 require('dayjs/locale/ru');
 
+const config = {
+    thresholds: [
+        { l: 'mm', r: 60, d: 'minute' },
+        { l: 'hh', r: 24, d: 'hour' },
+        { l: 'dd', r: 31, d: 'day' },
+        { l: 'MM', r: 12, d: 'month' },
+    ],
+};
+
+dayjs.extend(localizedFormat);
 dayjs.extend(duration);
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime, config);
 dayjs.locale('ru');
 
 export function formatDate(date: string) {
@@ -17,8 +28,8 @@ export function calculateDestinationTime(date: string, dur: number) {
 }
 
 export function humanDuration(time: number) {
-    const duration = dayjs.duration(time, 'minutes');
-    return dayjs('1999-01-01').to(dayjs('1999-01-01').add(duration), true);
+    const duration = dayjs.duration(time, 'minutes').humanize();
+    return duration;
 }
 
 export function declOfNum(number: number) {
