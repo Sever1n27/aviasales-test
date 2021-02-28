@@ -24,7 +24,7 @@ export function Segment(props: SegmentProps) {
             </div>
             <div className={styles.column}>
                 <span className={styles.label}>в пути</span>
-                <span>{humanDuration(duration * 60)}</span>
+                <span>{humanDuration(duration)}</span>
             </div>
             <div className={styles.column}>
                 <span className={styles.label}>{declOfNum(stops.length)}</span>

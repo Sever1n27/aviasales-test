@@ -1,5 +1,5 @@
 {
-    "presets": ["razzle/babel"],
+    "presets": [["@babel/preset-env"], "razzle/babel"],
     "plugins": [
         [
             "@babel/plugin-transform-react-jsx",

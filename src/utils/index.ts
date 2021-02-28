@@ -1,19 +1,24 @@
-import { formatDuration, intervalToDuration, format, parseISO, addMinutes } from 'date-fns';
-import ru from 'date-fns/locale/ru';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
+require('dayjs/locale/ru');
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.locale('ru');
 
 export function formatDate(date: string) {
-    return format(parseISO(date), 'HH:mm', { locale: ru });
+    return dayjs(date).format('HH:mm');
 }
 
-export function calculateDestinationTime(date: string, duration: number) {
-    return format(addMinutes(parseISO(date), duration), 'HH:mm', { locale: ru });
+export function calculateDestinationTime(date: string, dur: number) {
+    const duration = dayjs.duration(dur, 'minutes');
+    return dayjs(date).add(duration).format('HH:mm');
 }
 
 export function humanDuration(time: number) {
-    return formatDuration(intervalToDuration({ start: 0, end: time * 1000 }), {
-        locale: ru,
-        format: ['days', 'hours', 'minutes'],
-    });
+    const duration = dayjs.duration(time, 'minutes');
+    return dayjs('1999-01-01').to(dayjs('1999-01-01').add(duration), true);
 }
 
 export function declOfNum(number: number) {
