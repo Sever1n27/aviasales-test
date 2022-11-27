@@ -1,10 +1,10 @@
 import React from 'react';
-import { Ticket } from '@types';
+import { Ticket as TicketProps } from '@types';
 import { Card } from '@ui';
 import styles from './Ticket.module.scss';
 import { Segment } from './components/Segment';
 
-export function Ticket(props: Ticket) {
+export function Ticket(props: TicketProps) {
     const { price, carrier, segments } = props;
     return (
         <Card>

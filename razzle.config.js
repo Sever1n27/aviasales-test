@@ -1,7 +1,28 @@
-const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
+    options: {
+        buildType: 'spa',
+        verbose: true,
+    },
+    modifyWebpackConfig({
+        webpackConfig, // the created webpack config
+    }) {
+        const customConfig = { ...webpackConfig };
+        customConfig.plugins.push(
+            new webpack.ProvidePlugin({
+                h: ['preact', 'h'],
+            }),
+        );
+        customConfig.resolve.alias = {
+            ...webpackConfig.resolve.alias,
+            react: 'preact/compat',
+            'react-dom/test-utils': 'preact/test-utils',
+            'react-dom': 'preact/compat', // Must be below test-utils
+            'react/jsx-runtime': 'preact/jsx-runtime',
+        };
+        return customConfig;
+    },
     plugins: [
         {
             name: 'bundle-analyzer',
@@ -9,19 +30,6 @@ module.exports = {
                 target: 'web',
                 env: 'production',
                 bundleAnalyzerConfig: {},
-            },
-        },
-        {
-            name: 'typescript',
-            options: {
-                useBabel: true,
-                useEslint: true,
-                forkTsChecker: {
-                    tsconfig: './tsconfig.json',
-                    tslint: undefined,
-                    watch: './src',
-                    typeCheck: true,
-                },
             },
         },
         {
@@ -36,25 +44,4 @@ module.exports = {
         },
         'eslint',
     ],
-    modifyWebpackConfig: (config) => {
-        const customConfig = { ...config.webpackConfig };
-        customConfig.resolve['alias'] = {
-            '@ui': path.resolve('./src/ui/'),
-            '@core': path.resolve('./src/core/'),
-            '@constants': path.resolve('./src/constants/'),
-            '@pages': path.resolve('./src/pages/'),
-            '@types': path.resolve('./src/types/'),
-            '@features': path.resolve('./src/features/'),
-            '@utils': path.resolve('./src/utils/'),
-            react: 'preact/compat',
-            'react-dom/test-utils': 'preact/test-utils',
-            'react-dom': 'preact/compat',
-        };
-        customConfig.plugins.push(
-            new webpack.ProvidePlugin({
-                h: ['preact', 'h'],
-            }),
-        );
-        return customConfig;
-    },
 };

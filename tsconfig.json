@@ -16,7 +16,6 @@
         "noEmit": true,
         "jsx": "react",
         "paths": {
-            "@constants": ["constants"],
             "@features": ["features"],
             "@ui": ["ui"],
             "@core": ["core"],

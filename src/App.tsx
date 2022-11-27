@@ -1,5 +1,4 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
 import { Home } from '@pages';
 import { fetchSearchId } from '@core';
 import { ErrorNotifications } from '@features';
@@ -11,11 +10,7 @@ export function App() {
     return (
         <>
             <ErrorNotifications />
-            <Switch>
-                <Route exact path="/">
-                    <Home />
-                </Route>
-            </Switch>
+            <Home />
         </>
     );
 }
